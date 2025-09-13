@@ -1,0 +1,10 @@
+#!C:\Users\81903\Desktop\vscode_folder_in_desktop\dm_project_2\py311-dm-project-2\Scripts\python.exe
+
+import docx2txt
+
+if __name__ == '__main__':
+    import sys
+    args = docx2txt.process_args()
+    text = docx2txt.process(args.docx, args.img_dir)
+    output = getattr(sys.stdout, 'buffer', sys.stdout)
+    output.write(text.encode('utf-8'))
