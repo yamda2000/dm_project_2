@@ -16,6 +16,8 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder, PromptTemplate
 from langchain.schema import HumanMessage, AIMessage
 from langchain_openai import OpenAIEmbeddings
+import faiss  # faiss-cpuのインストールが必要
+from langchain_community.vectorstores import FAISS #faiss-cpuのインストールが必要
 from langchain_community.vectorstores import Chroma
 from langchain.chains import create_history_aware_retriever, create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
@@ -100,10 +102,14 @@ def create_rag_chain(db_name):
     embeddings = OpenAIEmbeddings()
 
     # すでに対象のデータベースが作成済みの場合は読み込み、未作成の場合は新規作成する
+    db_name = ".faiss_db"
     if os.path.isdir(db_name):
-        db = Chroma(persist_directory=".db", embedding_function=embeddings)
+        #db = Chroma(persist_directory=".db", embedding_function=embeddings)
+        db = FAISS.load_local(db_name, embeddings, allow_dangerous_deserialization=True)
     else:
-        db = Chroma.from_documents(splitted_docs, embedding=embeddings, persist_directory=".db")
+        #db = Chroma.from_documents(splitted_docs, embedding=embeddings, persist_directory=".db")
+        db = FAISS.from_documents(splitted_docs, embedding=embeddings)
+        db.save_local(db_name)
     retriever = db.as_retriever(search_kwargs={"k": ct.TOP_K})
 
     question_generator_template = ct.SYSTEM_PROMPT_CREATE_INDEPENDENT_TEXT
