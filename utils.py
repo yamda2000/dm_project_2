@@ -335,7 +335,8 @@ def notice_slack(chat_message):
 
     # Retrieverの作成
     embeddings = OpenAIEmbeddings()
-    db = Chroma.from_documents(docs_all, embedding=embeddings)
+    #db = Chroma.from_documents(docs_all, embedding=embeddings)
+    db = FAISS.from_documents(docs_all, embedding=embeddings)
     retriever = db.as_retriever(search_kwargs={"k": ct.TOP_K})
     bm25_retriever = BM25Retriever.from_texts(
         docs_all_page_contents,
