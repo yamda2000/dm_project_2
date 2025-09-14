@@ -109,6 +109,8 @@ def create_rag_chain(db_name):
     else:
         #db = Chroma.from_documents(splitted_docs, embedding=embeddings, persist_directory=".db")
         db = FAISS.from_documents(splitted_docs, embedding=embeddings)
+        # フォルダがなければ作成
+        os.makedirs(db_name, exist_ok=True)
         db.save_local(db_name)
     retriever = db.as_retriever(search_kwargs={"k": ct.TOP_K})
 
