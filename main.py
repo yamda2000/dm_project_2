@@ -21,7 +21,15 @@ st.set_page_config(
     page_title=ct.APP_NAME
 )
 
-load_dotenv()
+if load_dotenv():
+    load_dotenv()
+    print(".env を読み込みました")
+else:
+    print(".env が見つかりませんでした")
+    os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
+    os.environ["SERPAPI_API_KEY"] = st.secrets["SERPAPI_API_KEY"]
+    os.environ["SLACK_USER_TOKEN"] = st.secrets["SLACK_USER_TOKEN"]
+
 
 logger = logging.getLogger(ct.LOGGER_NAME)
 
